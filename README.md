@@ -1,18 +1,13 @@
-<<<<<<< HEAD
 # SHOPEZ Trading Hub
-=======
- SHOPEZ Trading Hub
->>>>>>> a798b91ba9571071d02037e6ff6df597d3517c8b
 
 SHOPEZ Trading Hub is a full-stack MERN-based stock trading simulation web application where users can register, log in, buy and sell stocks, manage their investment portfolio, and track their trading history. The application provides a secure authentication system, portfolio management, and transaction tracking through an intuitive user interface.
 
----
 
 # Project Description
 
 SHOPEZ Trading Hub provides an end-to-end stock trading simulation experience. Users can securely register and log in, execute buy and sell operations on available stocks, monitor their available trading cash, maintain a portfolio of owned assets, and view a complete trade ledger. The backend is developed using Node.js and Express.js with MongoDB for persistent data storage, while the frontend is built using HTML, CSS, JavaScript, and Tailwind CSS.
 
----
+
 
 # Features
 
@@ -27,7 +22,7 @@ SHOPEZ Trading Hub provides an end-to-end stock trading simulation experience. U
 - Responsive User Interface
 - Real-Time Portfolio Updates
 
----
+
 
 # Technology Stack
 
@@ -44,7 +39,7 @@ SHOPEZ Trading Hub provides an end-to-end stock trading simulation experience. U
 ### Database
 - MongoDB (Mongoose)
 
----
+
 
 # Project Architecture
 
@@ -58,7 +53,7 @@ Node.js + Express.js Server
 MongoDB Database
 ```
 
----
+
 
 # Folder Structure
 
@@ -83,14 +78,14 @@ SHOPEZ-Trading-Hub/
 └── README.md
 ```
 
----
+
 
 # Installation
 
 Clone the repository
 
 
-```
+
 
 Go into the project directory
 
@@ -108,27 +103,27 @@ Configure MongoDB connection inside the `.env` file.
 
 Example
 
-```
+
 MONGO_URI=your_mongodb_connection_string
 PORT=5000
 JWT_SECRET=your_secret_key
-```
+
 
 Start the backend
 
 ```bash
 npm start
-```
+
 
 Open the frontend
 
-```
+
 index.html
-```
+
 
 or use Live Server.
 
----
+
 
 # API Endpoints
 
@@ -151,7 +146,7 @@ or use Live Server.
 
 - GET /api/ledger
 
----
+
 
 # Screenshots
 
@@ -166,7 +161,7 @@ or use Live Server.
 - Portfolio Holdings
 - Trade Ledger
 
----
+
 
 # Future Enhancements
 
@@ -179,7 +174,7 @@ or use Live Server.
 - Admin Dashboard
 - Mobile Responsive Improvements
 
----
+
 
 
 
