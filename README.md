@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # SHOPEZ Trading Hub
+=======
+ SHOPEZ Trading Hub
+>>>>>>> a798b91ba9571071d02037e6ff6df597d3517c8b
 
 SHOPEZ Trading Hub is a full-stack MERN-based stock trading simulation web application where users can register, log in, buy and sell stocks, manage their investment portfolio, and track their trading history. The application provides a secure authentication system, portfolio management, and transaction tracking through an intuitive user interface.
 

@@ -104,14 +104,3 @@ MongoDB Database
 * Admin Dashboard
 * Mobile Application Support
 
-### Additional Project Resources
-
-Please refer to the Google Drive folder for the latest versions of all project documents.
-
----
-
-You can create a file named:
-
-**Project Documentation & Phase Wise Templates.md**
-
-and paste the above content into it. This will match the style shown in the Rentify GitHub screenshot, but customized for your **SHOPEZ Trading Hub** project.
