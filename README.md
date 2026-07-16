@@ -5,7 +5,7 @@ SHOPEZ is a MERN-style stock trading simulator. It provides JWT authentication, 
 ## Quick start
 
 1. Copy `.env.example` to `.env` and set `MONGO_URI` and a long `JWT_SECRET`.
-2. Use MongoDB Atlas or a MongoDB replica set. Trade execution uses database transactions and will not run against a standalone MongoDB server.
+2. Configure `MONGO_URI` for your MongoDB server. MongoDB Atlas, replica sets, and standalone local MongoDB are supported.
 3. Install dependencies with `npm install`.
 4. Start the app with `npm start` or `npm run dev`.
 5. Visit `http://localhost:5000`.

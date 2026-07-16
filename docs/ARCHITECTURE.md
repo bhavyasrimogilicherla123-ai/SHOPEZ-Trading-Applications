@@ -16,7 +16,7 @@ Browser requests enter `src/app.js`, match in `src/routes`, are authenticated by
 | `src/models/Portfolio.js` | Stores one user's positions and average cost basis. |
 | `src/models/Transaction.js` | Stores immutable buy and sell ledger records. |
 | `src/controllers/authController.js` | Registers users, verifies passwords, issues JWTs, and exposes profile data. |
-| `src/controllers/tradeController.js` | Validates and atomically executes orders. |
+| `src/controllers/tradeController.js` | Validates and sequentially executes orders. |
 | `src/controllers/portfolioController.js` | Reads wallet and positions. |
 | `src/controllers/transactionController.js` | Pages the transaction ledger. |
 | `src/routes/*.js` | Keeps endpoint declarations separate from business logic. |
@@ -33,4 +33,4 @@ Browser requests enter `src/app.js`, match in `src/routes`, are authenticated by
 
 ## Consistency guarantee
 
-`tradeController.js` runs user balance, portfolio, and ledger writes in one MongoDB transaction. Either all three changes commit or none do. MongoDB transactions require a replica set, including MongoDB Atlas clusters.
+`tradeController.js` saves the user balance, portfolio, and ledger record sequentially so it works with standalone MongoDB. The order endpoint does not create MongoDB sessions or transactions.
