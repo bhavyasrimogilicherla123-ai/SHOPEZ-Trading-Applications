@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const User = require('../models/User');
 const Portfolio = require('../models/Portfolio');
 const Transaction = require('../models/Transaction');
@@ -14,37 +13,29 @@ exports.placeOrder = asyncHandler(async (req, res) => {
   const shares = positiveInteger(req.body.shares, 'shares');
   const price = positivePrice(req.body.price);
   const total = Number((shares * price).toFixed(2));
-  const session = await mongoose.startSession();
-  let result;
+  const user = await User.findById(req.auth.sub);
+  if (!user) throw new ApiError(401, 'Account no longer exists.');
+  let portfolio = await Portfolio.findOne({ user: user._id });
+  if (!portfolio) portfolio = new Portfolio({ user: user._id, positions: [] });
+  const position = portfolio.positions.find((item) => item.symbol === symbol);
 
-  try {
-    await session.withTransaction(async () => {
-      const user = await User.findById(req.auth.sub).session(session);
-      if (!user) throw new ApiError(401, 'Account no longer exists.');
-      let portfolio = await Portfolio.findOne({ user: user._id }).session(session);
-      if (!portfolio) portfolio = new Portfolio({ user: user._id, positions: [] });
-      const position = portfolio.positions.find((item) => item.symbol === symbol);
-
-      if (side === 'BUY') {
-        if (user.walletBalance < total) throw new ApiError(400, 'Insufficient trading cash.');
-        user.walletBalance = Number((user.walletBalance - total).toFixed(2));
-        if (position) {
-          const combinedShares = position.shares + shares;
-          position.averageCost = Number((((position.shares * position.averageCost) + total) / combinedShares).toFixed(2));
-          position.shares = combinedShares;
-        } else portfolio.positions.push({ symbol, shares, averageCost: price });
-      } else {
-        if (!position || position.shares < shares) throw new ApiError(400, 'You do not hold enough shares to sell.');
-        user.walletBalance = Number((user.walletBalance + total).toFixed(2));
-        position.shares -= shares;
-        if (position.shares === 0) portfolio.positions.splice(portfolio.positions.indexOf(position), 1);
-      }
-      await Promise.all([user.save({ session }), portfolio.save({ session })]);
-      const [transaction] = await Transaction.create([{ user: user._id, symbol, side, shares, price, total }], { session });
-      result = { transaction, walletBalance: user.walletBalance, positions: portfolio.positions };
-    });
-  } finally {
-    await session.endSession();
+  if (side === 'BUY') {
+    if (user.walletBalance < total) throw new ApiError(400, 'Insufficient trading cash.');
+    user.walletBalance = Number((user.walletBalance - total).toFixed(2));
+    if (position) {
+      const combinedShares = position.shares + shares;
+      position.averageCost = Number((((position.shares * position.averageCost) + total) / combinedShares).toFixed(2));
+      position.shares = combinedShares;
+    } else portfolio.positions.push({ symbol, shares, averageCost: price });
+  } else {
+    if (!position || position.shares < shares) throw new ApiError(400, 'You do not hold enough shares to sell.');
+    user.walletBalance = Number((user.walletBalance + total).toFixed(2));
+    position.shares -= shares;
+    if (position.shares === 0) portfolio.positions.splice(portfolio.positions.indexOf(position), 1);
   }
-  res.status(201).json({ data: result });
+
+  await user.save();
+  await portfolio.save();
+  const transaction = await Transaction.create({ user: user._id, symbol, side, shares, price, total });
+  res.status(201).json({ data: { transaction, walletBalance: user.walletBalance, positions: portfolio.positions } });
 });
