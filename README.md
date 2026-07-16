@@ -1,181 +1,57 @@
 # SHOPEZ Trading Hub
 
-SHOPEZ Trading Hub is a full-stack MERN-based stock trading simulation web application where users can register, log in, buy and sell stocks, manage their investment portfolio, and track their trading history. The application provides a secure authentication system, portfolio management, and transaction tracking through an intuitive user interface.
+SHOPEZ is a MERN-style stock trading simulator. It provides JWT authentication, a simulated cash wallet, buy and sell orders, persistent positions, and a paginated trade ledger. The client is dependency-free static HTML/CSS/JavaScript served by Express.
 
+## Quick start
 
-# Project Description
+1. Copy `.env.example` to `.env` and set `MONGO_URI` and a long `JWT_SECRET`.
+2. Use MongoDB Atlas or a MongoDB replica set. Trade execution uses database transactions and will not run against a standalone MongoDB server.
+3. Install dependencies with `npm install`.
+4. Start the app with `npm start` or `npm run dev`.
+5. Visit `http://localhost:5000`.
 
-SHOPEZ Trading Hub provides an end-to-end stock trading simulation experience. Users can securely register and log in, execute buy and sell operations on available stocks, monitor their available trading cash, maintain a portfolio of owned assets, and view a complete trade ledger. The backend is developed using Node.js and Express.js with MongoDB for persistent data storage, while the frontend is built using HTML, CSS, JavaScript, and Tailwind CSS.
+## Scripts
 
+| Command | Purpose |
+| --- | --- |
+| `npm start` | Start the production server. |
+| `npm run dev` | Start Node watch-mode development server. |
+| `npm run check` | Parse-check application entry points. |
 
+## Environment
 
-# Features
+| Variable | Required | Description |
+| --- | --- | --- |
+| `PORT` | No | HTTP port; defaults to `5000`. |
+| `MONGO_URI` | Yes | MongoDB replica-set or Atlas connection string. |
+| `JWT_SECRET` | Yes | Long, random secret used to sign access tokens. |
+| `JWT_EXPIRES_IN` | No | JWT lifetime; default `2h`. |
+| `CLIENT_ORIGIN` | No | Browser origin permitted by CORS. |
 
-- User Registration and Login
-- Secure Authentication
-- Buy Stocks
-- Sell Stocks
-- Portfolio Management
-- Trading Cash Balance
-- Trade Ledger / Transaction History
-- MongoDB Database Integration
-- Responsive User Interface
-- Real-Time Portfolio Updates
+## Project structure
 
-
-
-# Technology Stack
-
-### Frontend
-- HTML5
-- CSS3
-- JavaScript
-- Tailwind CSS
-
-### Backend
-- Node.js
-- Express.js
-
-### Database
-- MongoDB (Mongoose)
-
-
-
-# Project Architecture
-
-```
-Frontend (HTML + Tailwind CSS)
-            │
-            ▼
-Node.js + Express.js Server
-            │
-            ▼
-MongoDB Database
+```text
+frontend/                 Static browser client served by Express
+  index.html              Dashboard and authentication markup
+  assets/css/app.css      Responsive dashboard styling
+  assets/js/api.js        Authenticated fetch wrapper
+  assets/js/app.js        Authentication, order and rendering behavior
+src/                      Express API source
+  config/                 Environment validation and MongoDB connection
+  controllers/            HTTP request orchestration
+  middleware/             JWT, 404, and centralized error handling
+  models/                 Mongoose schemas
+  routes/                 API endpoint definitions
+  utils/                  Error, async, and validation helpers
+server.js                 Process startup and database connection
+.env.example              Safe environment variable template
+docs/                     API and architecture documentation
 ```
 
+See [API documentation](docs/API.md) and [architecture notes](docs/ARCHITECTURE.md) for contracts, data design, and a file-by-file guide.
 
+## Notes
 
-# Folder Structure
-
-```
-SHOPEZ-Trading-Hub/
-
-│── frontend/
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   └── assets/
-│
-│── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── server.js
-│   └── package.json
-│
-└── README.md
-```
-
-
-
-# Installation
-
-Clone the repository
-
-
-
-
-Go into the project directory
-
-```bash
-cd SHOPEZ-Trading-Hub
-```
-
-Install backend dependencies
-
-```bash
-npm install
-```
-
-Configure MongoDB connection inside the `.env` file.
-
-Example
-
-
-MONGO_URI=your_mongodb_connection_string
-PORT=5000
-JWT_SECRET=your_secret_key
-
-
-Start the backend
-
-```bash
-npm start
-
-
-Open the frontend
-
-
-index.html
-
-
-or use Live Server.
-
-
-
-# API Endpoints
-
-## Authentication
-
-- POST /api/auth/register
-- POST /api/auth/login
-
-## Trading
-
-- GET /api/stocks
-- POST /api/trade/buy
-- POST /api/trade/sell
-
-## Portfolio
-
-- GET /api/portfolio
-
-## Ledger
-
-- GET /api/ledger
-
-
-
-# Screenshots
-
-### Login Page
-
-- User Login Interface
-
-### Dashboard
-
-- Trading Cash
-- Market Order
-- Portfolio Holdings
-- Trade Ledger
-
-
-
-# Future Enhancements
-
-- Live Stock Market API
-- Real-Time Stock Prices
-- Portfolio Analytics
-- Watchlist
-- Interactive Charts
-- Notifications
-- Admin Dashboard
-- Mobile Responsive Improvements
-
-
-
-
-
-
+- This application is a simulation. The client submits an execution price and no market-data provider is used.
+- Passwords are bcrypt-hashed; password data is excluded from normal database queries.
+- Never commit `.env`. Rotate `JWT_SECRET` if it is exposed.
