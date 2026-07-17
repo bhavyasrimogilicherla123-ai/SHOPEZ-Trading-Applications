@@ -16,4 +16,6 @@ module.exports.env = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '2h',
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5000',
+  rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX) || 200,
 };

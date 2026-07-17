@@ -36,3 +36,15 @@ exports.me = asyncHandler(async (req, res) => {
   if (!user) throw new ApiError(401, 'Account no longer exists.');
   res.json({ data: { id: user.id, username: user.username, email: user.email, walletBalance: user.walletBalance } });
 });
+
+exports.resetAccount = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.auth.sub);
+  if (!user) throw new ApiError(401, 'Account no longer exists.');
+  user.walletBalance = 10000;
+  await user.save();
+  await Promise.all([
+    Portfolio.findOneAndUpdate({ user: user._id }, { $set: { positions: [] } }, { upsert: true }),
+    require('../models/Transaction').deleteMany({ user: user._id }),
+  ]);
+  res.json({ data: { message: 'Your simulated account has been reset.', walletBalance: user.walletBalance, positions: [] } });
+});
