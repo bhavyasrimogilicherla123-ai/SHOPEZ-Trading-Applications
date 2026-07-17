@@ -7,5 +7,5 @@ const userSchema = new mongoose.Schema({
   walletBalance: { type: Number, default: 10000, min: 0 },
 }, { timestamps: true, versionKey: false });
 
-userSchema.index({ email: 1 }, { unique: true });
+
 module.exports = mongoose.model('User', userSchema);
