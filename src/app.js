@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 const { env } = require('./config/env');
 const authRoutes = require('./routes/authRoutes');
 const tradeRoutes = require('./routes/tradeRoutes');
@@ -15,10 +16,33 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 app.disable('x-powered-by');
 app.use(requestContext);
-app.use(cors({ origin: env.clientOrigin, methods: ['GET', 'POST'], allowedHeaders: ['Content-Type', 'Authorization'] }));
+app.use(cors({
+  // Requests without an Origin header include health checks and command-line clients.
+  origin(origin, callback) {
+    if (env.nodeEnv !== 'production') {
+      return callback(null, true);
+    }
+    if (!origin) {
+      return callback(null, true);
+    }
+    const localDevelopmentOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    if (localDevelopmentOrigin || env.clientOrigins.includes(origin) || origin === 'null') {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json({ limit: '20kb' }));
 app.use('/api', rateLimit);
-app.get('/api/health', (_req, res) => res.json({ data: { status: 'ok', environment: env.nodeEnv } }));
+app.get('/api/health', (_req, res) => res.json({
+  data: {
+    status: mongoose.connection.readyState === 1 ? 'ok' : 'degraded',
+    environment: env.nodeEnv,
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+  },
+}));
 app.use('/api/auth', authRoutes);
 app.use('/api/trades', tradeRoutes);
 app.use('/api/portfolio', portfolioRoutes);

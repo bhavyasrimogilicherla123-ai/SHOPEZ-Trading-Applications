@@ -1,6 +1,7 @@
 const app = require('./src/app');
 const connectDatabase = require('./src/config/database');
 const { env } = require('./src/config/env');
+const mongoose = require('mongoose');
 
 let server;
 const start = async () => {
@@ -12,8 +13,9 @@ const start = async () => {
 
 function shutdown(signal) {
   console.log(`${signal} received; closing SHOPEZ server.`);
-  if (!server) return process.exit(0);
-  server.close(() => process.exit(0));
+  const finish = () => mongoose.disconnect().catch(() => {}).finally(() => process.exit(0));
+  if (!server) return finish();
+  server.close(finish);
   setTimeout(() => process.exit(1), 10000).unref();
 }
 
